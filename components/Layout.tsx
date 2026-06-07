@@ -16,6 +16,9 @@ export default function Layout({ children, title = 'My Website', description = '
         <meta name="description" content={description} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+        {/* Netlify Identity widget — handles invite/password-reset tokens in URL hash */}
+        <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+        <script src="/netlify-identity-redirect.js" defer></script>
         {/* Fathom Analytics — replace YOUR_SITE_ID after connecting */}
         {/* <script src="https://cdn.usefathom.com/script.js" data-site="YOUR_SITE_ID" defer></script> */}
       </Head>
