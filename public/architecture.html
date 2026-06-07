@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Architecture</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f7f4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #78716c;
+      margin-bottom: 48px;
+    }
+
+    /* ── Layout ── */
+    .diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+      max-width: 780px;
+    }
+
+    /* ── Rows ── */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    /* ── Boxes ── */
+    .box {
+      border-radius: 14px;
+      padding: 20px 22px;
+      width: 170px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.06);
+      position: relative;
+    }
+    .box .icon { font-size: 28px; margin-bottom: 8px; }
+    .box .label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 4px;
+    }
+    .box .desc {
+      font-size: 11.5px;
+      color: #78716c;
+      line-height: 1.5;
+    }
+    .box .tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Colours per box */
+    .box-lucy   { background: #fff7ed; }
+    .box-lucy .tag { background: #fed7aa; color: #9a3412; }
+
+    .box-cms    { background: #f0fdf4; }
+    .box-cms .tag { background: #bbf7d0; color: #166534; }
+
+    .box-github { background: #f0f9ff; }
+    .box-github .tag { background: #bae6fd; color: #0c4a6e; }
+
+    .box-netlify { background: #faf5ff; }
+    .box-netlify .tag { background: #e9d5ff; color: #6b21a8; }
+
+    .box-cdn    { background: #fff1f2; }
+    .box-cdn .tag { background: #fecdd3; color: #9f1239; }
+
+    .box-visitor { background: #fefce8; }
+    .box-visitor .tag { background: #fef08a; color: #854d0e; }
+
+    /* ── Arrows ── */
+    .arrow-h {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+    .arrow-h .line {
+      width: 36px;
+      height: 2px;
+      background: #d4c9be;
+      position: relative;
+    }
+    .arrow-h .line::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: -4px;
+      border: 5px solid transparent;
+      border-left-color: #d4c9be;
+    }
+    .arrow-h .alabel {
+      font-size: 10px;
+      color: #a8a29e;
+      white-space: nowrap;
+    }
+
+    .arrow-v {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      height: 52px;
+      justify-content: center;
+    }
+    .arrow-v .vline {
+      width: 2px;
+      height: 36px;
+      background: #d4c9be;
+      position: relative;
+    }
+    .arrow-v .vline::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: -4px;
+      border: 5px solid transparent;
+      border-top-color: #d4c9be;
+    }
+    .arrow-v .alabel {
+      font-size: 10px;
+      color: #a8a29e;
+      white-space: nowrap;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      margin-top: 44px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 24px;
+      justify-content: center;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #57534e;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    /* ── Publish flow annotation ── */
+    .flow-section {
+      margin-top: 48px;
+      width: 100%;
+      max-width: 780px;
+    }
+    .flow-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: white;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #44403c;
+    }
+    .step .num {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #1c1917;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-arrow { color: #d4c9be; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+  <h1>Site Architecture</h1>
+  <p class="subtitle">How Lucy's blog works — from writing to the visitor's screen</p>
+
+  <div class="diagram">
+
+    <!-- Row 1: Lucy → CMS -->
+    <div class="row">
+      <div class="box box-lucy">
+        <div class="icon">👩</div>
+        <div class="label">Lucy</div>
+        <div class="desc">Writes &amp; edits posts in the browser</div>
+        <span class="tag">Author</span>
+      </div>
+
+      <div class="arrow-h">
+        <div class="line"></div>
+        <div class="alabel">logs in &amp; writes</div>
+      </div>
+
+      <div class="box box-cms">
+        <div class="icon">📝</div>
+        <div class="label">Netlify CMS</div>
+        <div class="desc">Browser-based editor at <strong>/admin</strong>. No code needed.</div>
+        <span class="tag">netlify-cms</span>
+      </div>
+
+      <div class="arrow-h">
+        <div class="line"></div>
+        <div class="alabel">commits .md file</div>
+      </div>
+
+      <div class="box box-github">
+        <div class="icon">🐙</div>
+        <div class="label">GitHub</div>
+        <div class="desc">Stores all code &amp; content as plain text files</div>
+        <span class="tag">geoffsaxby/my-website</span>
+      </div>
+    </div>
+
+    <!-- Down arrow from GitHub to Netlify -->
+    <div style="display:flex; width:100%; max-width:780px; justify-content:flex-end; padding-right: 22px;">
+      <div class="arrow-v">
+        <div class="vline"></div>
+        <div class="alabel">new commit triggers build</div>
+      </div>
+    </div>
+
+    <!-- Row 2: Netlify → CDN → Visitor -->
+    <div class="row" style="justify-content: flex-end;">
+      <div class="box box-visitor">
+        <div class="icon">🌍</div>
+        <div class="label">Visitor</div>
+        <div class="desc">Loads the page instantly from nearest server</div>
+        <span class="tag">Any device</span>
+      </div>
+
+      <div class="arrow-h" style="transform: scaleX(-1);">
+        <div class="line"></div>
+        <div class="alabel" style="transform: scaleX(-1);">pre-built HTML</div>
+      </div>
+
+      <div class="box box-cdn">
+        <div class="icon">🌐</div>
+        <div class="label">Netlify CDN</div>
+        <div class="desc">Global network serves pre-built pages. No server needed.</div>
+        <span class="tag">Edge network</span>
+      </div>
+
+      <div class="arrow-h" style="transform: scaleX(-1);">
+        <div class="line"></div>
+        <div class="alabel" style="transform: scaleX(-1);">deploys files</div>
+      </div>
+
+      <div class="box box-netlify">
+        <div class="icon">⚙️</div>
+        <div class="label">Netlify Build</div>
+        <div class="desc">Runs <code>npm run build</code> — turns Markdown into HTML</div>
+        <span class="tag">Next.js + Tailwind</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Publish flow -->
+  <div class="flow-section">
+    <div class="flow-title">Publish flow — what happens when Lucy hits "Publish"</div>
+    <div class="flow-steps">
+      <div class="step"><span class="num">1</span> Lucy edits post in /admin</div>
+      <span class="step-arrow">›</span>
+      <div class="step"><span class="num">2</span> CMS commits .md to GitHub</div>
+      <span class="step-arrow">›</span>
+      <div class="step"><span class="num">3</span> GitHub notifies Netlify</div>
+      <span class="step-arrow">›</span>
+      <div class="step"><span class="num">4</span> Netlify builds site (~1 min)</div>
+      <span class="step-arrow">›</span>
+      <div class="step"><span class="num">5</span> New pages go live on CDN</div>
+    </div>
+  </div>
+
+</body>
+</html>

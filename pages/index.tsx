@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getAllContent, PageData } from '../lib/content'
 
 interface HomeProps {
@@ -9,6 +9,15 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
+  const [visitorNumber, setVisitorNumber] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetch('/api/visit', { method: 'GET' })
+      .then(r => r.json())
+      .then(data => setVisitorNumber(data.count))
+      .catch(() => {}) // silently fail if function not available locally
+  }, [])
+
   useEffect(() => {
     let cancelled = false
     import('canvas-confetti').then(({ default: confetti }) => {
@@ -43,6 +52,13 @@ export default function Home({ posts }: HomeProps) {
           >
             Read the Blog
           </Link>
+
+          {visitorNumber && (
+            <p className="mt-6 text-sm text-stone-400">
+              You are visitor number{' '}
+              <span className="font-semibold text-amber-700">#{visitorNumber.toLocaleString()}</span>
+            </p>
+          )}
         </div>
       </section>
 
