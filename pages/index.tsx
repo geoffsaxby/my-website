@@ -1,6 +1,7 @@
 import Layout from '../components/Layout'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useEffect } from 'react'
 import { getAllContent, PageData } from '../lib/content'
 
 interface HomeProps {
@@ -8,6 +9,23 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
+  useEffect(() => {
+    let cancelled = false
+    import('canvas-confetti').then(({ default: confetti }) => {
+      if (cancelled) return
+      // First burst
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.55 } })
+      // Second burst after a short delay
+      setTimeout(() => {
+        if (!cancelled) confetti({ particleCount: 80, spread: 120, origin: { y: 0.5 }, angle: 60, startVelocity: 45 })
+      }, 300)
+      setTimeout(() => {
+        if (!cancelled) confetti({ particleCount: 80, spread: 120, origin: { y: 0.5 }, angle: 120, startVelocity: 45 })
+      }, 500)
+    })
+    return () => { cancelled = true }
+  }, [])
+
   return (
     <Layout title="My Website" description="Welcome to my personal blog">
       {/* Hero */}
